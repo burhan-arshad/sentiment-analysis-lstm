@@ -1,36 +1,52 @@
 # IMDB Sentiment Analysis
 
-A deep learning sentiment analysis project that uses an LSTM neural network to classify IMDB movie reviews as positive or negative.
+A deep learning NLP project that uses an **LSTM neural network** to classify IMDB movie reviews as **positive or negative**. The trained model is deployed through a Streamlit application for real-time sentiment prediction.
 
 ## Overview
 
-This project processes movie reviews from the IMDB Dataset and uses an LSTM-based neural network to learn sentiment patterns in the text.
+This project demonstrates an end-to-end sentiment analysis pipeline:
 
-The trained model is also deployed through a Streamlit web application where users can enter their own movie reviews and receive a sentiment prediction with confidence.
+```text
+Movie Review
+     ↓
+Text Cleaning
+     ↓
+Tokenization
+     ↓
+Sequence Padding
+     ↓
+Word Embedding
+     ↓
+LSTM Neural Network
+     ↓
+Positive / Negative Prediction
+```
+
+The Streamlit application allows users to enter their own movie reviews and receive a sentiment prediction with confidence.
 
 ## Features
 
-* Text preprocessing and cleaning
+* Text cleaning and preprocessing
 * Word tokenization
-* Vocabulary limited to 20,000 words
+* 20,000-word vocabulary
 * Sequence padding and truncation
 * Trainable word embeddings
-* LSTM-based sentiment classification
+* LSTM-based classification
 * Binary sentiment prediction
-* Model evaluation using accuracy, precision, recall, and F1-score
+* Accuracy, precision, recall, and F1-score evaluation
 * Confusion matrix visualization
-* Streamlit deployment
+* Streamlit web application
 * Example reviews for testing
 
 ## Dataset
 
-The project uses the IMDB Dataset containing 50,000 movie reviews labeled as either positive or negative.
+The project uses the **IMDB Dataset**, containing **50,000 movie reviews** labeled as positive or negative.
 
 The dataset is not included in this repository.
 
-## Preprocessing
+## Text Preprocessing
 
-The reviews are converted to lowercase and cleaned by removing:
+Reviews are converted to lowercase and cleaned by removing:
 
 * URLs
 * HTML tags
@@ -39,57 +55,67 @@ The reviews are converted to lowercase and cleaned by removing:
 * Punctuation
 * Extra whitespace
 
-The cleaned reviews are tokenized and converted into integer sequences.
+The cleaned text is tokenized and converted into integer sequences.
 
-The vocabulary is limited to the 20,000 most frequent words.
-
-Each sequence is padded or truncated to a maximum length of 200 tokens.
+The tokenizer is limited to the **20,000 most frequent words**, and sequences are padded or truncated to a maximum length of **200 tokens**.
 
 ## Model Architecture
 
-The model consists of:
-
 ```text
+Input Text
+    ↓
 Embedding
     ↓
-LSTM(64)
+LSTM — 64 units
     ↓
-Dropout(0.5)
+Dropout — 0.5
     ↓
-Dense(1, sigmoid)
+Dense — 1 unit
+    ↓
+Sigmoid
+    ↓
+Positive / Negative
 ```
 
-### Model Configuration
+### Configuration
 
-* Vocabulary size: 20,000
-* Embedding dimension: 128
-* LSTM units: 64
-* Dropout: 0.5
-* Optimizer: Adam
-* Loss function: Binary Crossentropy
-* Batch size: 128
-* Maximum epochs: 15
-* Early stopping: Enabled
+| Parameter           | Value               |
+| ------------------- | ------------------- |
+| Vocabulary Size     | 20,000              |
+| Embedding Dimension | 128                 |
+| LSTM Units          | 64                  |
+| Dropout             | 0.5                 |
+| Optimizer           | Adam                |
+| Loss                | Binary Crossentropy |
+| Batch Size          | 128                 |
+| Maximum Epochs      | 15                  |
+| Early Stopping      | Enabled             |
+| Sequence Length     | 200                 |
 
 ## Results
 
-The model achieved approximately:
+The model achieved approximately **79.95% test accuracy**.
 
-```text
-Test Accuracy: 79.95%
+| Class    | Precision | Recall | F1-Score |
+| -------- | --------: | -----: | -------: |
+| Negative |      0.78 |   0.82 |     0.80 |
+| Positive |      0.82 |   0.77 |     0.80 |
 
-Negative:
-Precision: 0.78
-Recall:    0.82
-F1-score:  0.80
+The results show relatively balanced performance across both sentiment classes.
 
-Positive:
-Precision: 0.82
-Recall:    0.77
-F1-score:  0.80
-```
+## Streamlit Application
 
-The model achieved balanced performance across positive and negative sentiment classes.
+The application loads the trained model and preprocessing objects to perform predictions on new reviews.
+
+The prediction pipeline is:
+
+1. Clean the input review
+2. Tokenize the text
+3. Convert text into integer sequences
+4. Pad the sequence to 200 tokens
+5. Pass the sequence through the LSTM model
+6. Predict positive or negative sentiment
+7. Display the prediction and confidence
 
 ## Project Structure
 
@@ -106,40 +132,32 @@ imdb-sentiment-analysis/
 └── .gitignore
 ```
 
-## Saved Files
+## Saved Model Files
 
-### imdb_lstm_model.keras
+* **`imdb_lstm_model.keras`** — trained LSTM sentiment classification model
+* **`imdb_tokenizer.pkl`** — fitted tokenizer for converting text into sequences
+* **`imdb_label_encoder.pkl`** — label encoder for sentiment classes
+* **`imdb_max_len.pkl`** — maximum sequence length used during training
 
-The trained LSTM model used for sentiment prediction.
+Keeping these preprocessing objects with the model ensures that new reviews are processed consistently with the training data.
 
-### imdb_tokenizer.pkl
+## Example
 
-The fitted tokenizer used to convert text into the same integer representation used during training.
+### Positive Review
 
-### imdb_label_encoder.pkl
+```text
+This movie was absolutely amazing. The acting was brilliant, the story was engaging, and I enjoyed every minute of it.
+```
 
-The fitted label encoder used to convert between sentiment labels and numerical classes.
+### Negative Review
 
-### imdb_max_len.pkl
+```text
+This movie was terrible. The story was boring, the acting was weak, and I wasted two hours watching it.
+```
 
-Stores the maximum sequence length used by the model.
+## Running Locally
 
-## Streamlit Application
-
-The Streamlit application loads the trained model and preprocessing objects and allows users to enter movie reviews.
-
-The application:
-
-1. Cleans the input review
-2. Converts the review into a token sequence
-3. Pads the sequence to the required length
-4. Sends it to the LSTM model
-5. Predicts positive or negative sentiment
-6. Displays the prediction confidence
-
-## Running the Project
-
-Create and activate a virtual environment:
+Create a virtual environment:
 
 ```bash
 python -m venv .venv
@@ -163,25 +181,12 @@ Run the Streamlit application:
 streamlit run app.py
 ```
 
-## Example Reviews
-
-### Positive
-
-```text
-This movie was absolutely amazing. The acting was brilliant, the story was engaging, and I enjoyed every minute of it.
-```
-
-### Negative
-
-```text
-This movie was terrible. The story was boring, the acting was weak, and I wasted two hours watching it.
-```
+The application will open locally in your browser.
 
 ## Technologies
 
 * Python
-* TensorFlow
-* Keras
+* TensorFlow / Keras
 * NumPy
 * Pandas
 * Scikit-learn
@@ -191,10 +196,28 @@ This movie was terrible. The story was boring, the acting was weak, and I wasted
 
 ## Limitations
 
-The model is trained on IMDB movie reviews and is designed for binary positive/negative sentiment classification.
+The model performs **binary sentiment classification** and was trained specifically on IMDB movie reviews.
 
-An accuracy of approximately 80% means the model will still make incorrect predictions on some reviews, particularly ambiguous or context-heavy reviews.
+With approximately 80% test accuracy, the model will still produce incorrect predictions, especially for reviews containing sarcasm, mixed opinions, ambiguous language, or context that is difficult to infer from the text alone.
+
+## Future Improvements
+
+Possible improvements include:
+
+* Bidirectional LSTM
+* GRU-based architecture
+* Pre-trained word embeddings
+* Attention mechanisms
+* Transformer-based sentiment models
+* Hyperparameter tuning
+* Larger and more diverse datasets
 
 ## License
 
 This project is intended for educational and portfolio purposes.
+
+
+## Author
+
+**Burhan Arshad**
+Computer Science Student
